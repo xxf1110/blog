@@ -63,6 +63,29 @@ exports.login = async ctx => {
       })
     }
 
+    ctx.cookies.set("username", username, {
+      domain: "localhost",
+      path: "/",
+      maxAge: 36e5,
+      overwrite: false,
+      httpOnly: true,
+      signed: false
+    })
+
+    ctx.cookies.set("uid", data[0]._id, {
+      domain: "localhost",
+      path: "/",
+      maxAge: 36e5,
+      overwrite: false,
+      httpOnly: true,
+      signed: false
+    })
+
+    ctx.session = {
+      username,
+      uid: data[0]._id
+    }
+
     await ctx.render('isOk', {
       status: "登录成功"
     }) 
@@ -81,3 +104,27 @@ exports.login = async ctx => {
 
 }
 
+
+exports.keepLog = async(ctx, next) => {
+  if(ctx.session.isNew){  // true没有设置session
+    if(ctx.cookies.get('uid')){
+      ctx.session = {
+        username: ctx.cookies.get('username'),
+        uid: ctx.cookies.get('uid')
+      }
+    }
+  }
+
+  await next()
+}
+
+exports.logout = async ctx => {
+  ctx.session = null
+  ctx.cookies.set("username", null, {
+    maxAge: 0
+  })
+  ctx.cookies.set("uid", null, {
+    maxAge: 0
+  })
+  ctx.redirect("/")
+}

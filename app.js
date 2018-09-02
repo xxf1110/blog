@@ -4,17 +4,29 @@ const views = require('koa-views')
 const  { join } = require('path')
 const logger = require('koa-logger')  
 const body = require('koa-body')
+const session = require('koa-session')
 const router = require('./routers/router')
 const app = new Koa
 
+app.keys = ['this is keys']
 
+// session 配置对象
+const CONFIG = {
+  key: 'Sid',
+  maxAge: 36e5,
+  overwrite: true,
+  httpOnly: true,
+  rolling: true,
+  signed: true
+}
 
 // app.use(logger())
-app.use(static(join(__dirname, 'public')))
-app.use(views(join(__dirname, 'views'), {
+app.use(session(CONFIG, app))
+  .use(static(join(__dirname, 'public')))
+  .use(views(join(__dirname, 'views'), {
     extension: "pug"
   }))
-app.use(body())
+  .use(body())
 
 
 
