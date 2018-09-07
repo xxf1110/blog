@@ -19,8 +19,7 @@
         ul.layui-nav.blog-user
           if session && !session.isNew
             li.layui-nav-item
-              a(href=session.role > 1 ? "/admin/user": "/admin/article") 个人中心
-                //- span.layui-badge-dot
+              a(href=(session.role > 1) ? "/admin/user" : "/admin/article") 个人中心
             li.layui-nav-item
               a(href="")
                 //- 用户测试头像
