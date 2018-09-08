@@ -7,6 +7,7 @@ const body = require('koa-body')
 const session = require('koa-session')
 const router = require('./routers/router')
 const { admin } = require('./control/user')
+const compress = require('koa-compress')
 const app = new Koa
 
 app.keys = ['this is keys']
@@ -21,11 +22,15 @@ const CONFIG = {
   signed: true
 }
 
-// app.use(logger())
-app.use(session(CONFIG, app))
+app.use(logger())
+  .use(session(CONFIG, app))
   .use(static(join(__dirname, 'public')))
   .use(views(join(__dirname, 'views'), {
     extension: "pug"
+  }))
+  .use(compress({
+    threshold: 2048,
+    flush: require('zlib').Z_SYNC_FLUSH
   }))
   .use(body())
 
