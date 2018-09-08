@@ -103,7 +103,7 @@ exports.details = async ctx => {
     })  
 
   await ctx.render('article', {
-    title: article.title,
+    title: 'blog',
     session: ctx.session,
     article,
     comment,

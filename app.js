@@ -23,14 +23,14 @@ const CONFIG = {
 }
 
 app.use(logger())
+  .use(compress({
+    threshold: 2048,
+    flush: require('zlib').Z_SYNC_FLUSH
+  }))
   .use(session(CONFIG, app))
   .use(static(join(__dirname, 'public')))
   .use(views(join(__dirname, 'views'), {
     extension: "pug"
-  }))
-  .use(compress({
-    threshold: 2048,
-    flush: require('zlib').Z_SYNC_FLUSH
   }))
   .use(body())
 
