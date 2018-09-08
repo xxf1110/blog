@@ -1,11 +1,16 @@
 const encrypto = require('../util/encrypto')
-const { db } = require('../Schema/config')
-const UserSchema = require('../Schema/user')
-const User = db.model('users', UserSchema)
-const CommentSchema = require('../Schema/comment')
-const Comment = db.model('comments', CommentSchema)
-const ArticleSchema = require('../Schema/article')
-const Article = db.model('articles', ArticleSchema)
+
+// const { db } = require('../Schema/config')
+// const UserSchema = require('../Schema/user')
+// const User = db.model('users', UserSchema)
+// const CommentSchema = require('../Schema/comment')
+// const Comment = db.model('comments', CommentSchema)
+// const ArticleSchema = require('../Schema/article')
+// const Article = db.model('articles', ArticleSchema)
+
+const User = require('../Models/user')
+const Article = require('../Models/article')
+const Comment = require('../Models/comment')
 
 
 // 登录注册页面
@@ -221,7 +226,7 @@ exports.del = async ctx => {
   let message = {}
   if(id === ctx.session.uid){
     ctx.body = {
-      state: 0,
+      state: 1,
       message: "删除失败"
     }
     return

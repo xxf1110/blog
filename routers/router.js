@@ -64,8 +64,6 @@ router.del('/user/:id', user.keepLog, user.del)
 
 
 
-
-
 // 404
 router.get('*', async ctx => {
   await ctx.render('404', {

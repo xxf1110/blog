@@ -19,4 +19,17 @@ const CommentSchema = new Schema({
   }
 })
 
+
+CommentSchema.post("remove", async doc => {
+  const User = require('../Models/user')
+  const Article = require('../Models/article')
+  const {from, article} = doc
+
+  await Article.updateOne({ _id: article }, {$inc: {commentNum: -1}}).exec()
+
+  await User.updateOne({ _id: from }, {$inc: {commentNum: -1}}).exec()
+  
+})
+
+
 module.exports = CommentSchema

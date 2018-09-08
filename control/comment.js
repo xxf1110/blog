@@ -1,10 +1,14 @@
-const { db } = require('../Schema/config')
-const CommentSchema = require('../Schema/comment')
-const Comment = db.model('comments', CommentSchema)
-const ArticleSchema = require('../Schema/article')
-const Article = db.model('articles', ArticleSchema)
-const UserSchema = require('../Schema/user')
-const User = db.model('users', UserSchema)
+
+// const { db } = require('../Schema/config')
+// const CommentSchema = require('../Schema/comment')
+// const Comment = db.model('comments', CommentSchema)
+// const ArticleSchema = require('../Schema/article')
+// const Article = db.model('articles', ArticleSchema)
+// const UserSchema = require('../Schema/user')
+// const User = db.model('users', UserSchema)
+const User = require('../Models/user')
+const Article = require('../Models/article')
+const Comment = require('../Models/comment')
 
 exports.save = async ctx => {
   let message = {
@@ -69,43 +73,61 @@ exports.getCom = async ctx => {
 
 
 exports.del = async ctx => {
-  let id = ctx.params.id
-  let message = {}
-  let artId = await Comment
-    .findById(id)
-    .populate({
-      path: 'article',
-      select: "_id"
-    })
-    .then(data => data.article._id)
-    .catch(err => console.log(err))
+  // let id = ctx.params.id
+  // let message = {}
+  // let artId = await Comment
+  //   .findById(id)
+  //   .populate({
+  //     path: 'article',
+  //     select: "_id"
+  //   })
+  //   .then(data => data.article._id)
+  //   .catch(err => console.log(err))
     
-  await Comment.deleteOne({_id: id}).then(data => {
-    message = {
-      state: 1,
-      message: "删除成功"
-    }
-  })
-  .catch(err => {
-    message = {
-      state: 0,
-      message: "删除失败"
-    }
-  })
+  // await Comment.deleteOne({_id: id}).then(data => {
+  //   message = {
+  //     state: 1,
+  //     message: "删除成功"
+  //   }
+  // })
+  // .catch(err => {
+  //   message = {
+  //     state: 0,
+  //     message: "删除失败"
+  //   }
+  // })
   
-  await User
-    .updateOne({ _id: ctx.session.uid }, { $inc: { commentNum: -1 } })
-    .then(data => {})
-    .catch(err => {
-      console.log('文章数据库减1失败')
+  // await User
+  //   .updateOne({ _id: ctx.session.uid }, { $inc: { commentNum: -1 } })
+  //   .then(data => {})
+  //   .catch(err => {
+  //     console.log('文章数据库减1失败')
+  //   })
+  // await Article
+  //   .updateOne({_id: artId}, {$inc: {commentNum: -1}})
+  //   .then(data => {})
+  //   .catch(err => {
+  //     console.log('文章数据库减1失败')  
+  //   })
+
+  // ctx.body = message
+
+  let id = ctx.params.id
+  let data = {
+    state: 1,
+    message: "删除成功"
+  }
+  await Comment.findById(id)
+    .then(data => {
+      data.remove()
     })
-  await Article
-    .updateOne({_id: artId}, {$inc: {commentNum: -1}})
-    .then(data => {})
     .catch(err => {
-      console.log('文章数据库减1失败')  
+      data = {
+        state: 0,
+        message: "删除失败"
+      }
     })
 
-  ctx.body = message
+    ctx.body = data
 
 }

@@ -1,11 +1,13 @@
-const { db } = require('../Schema/config')
-const ArticleSchema = require('../Schema/article')
-const Article = db.model('articles', ArticleSchema)
-const UserSchema = require('../Schema/user')
-const User = db.model('users', UserSchema)
-const CommentSchema = require('../Schema/comment')
-const Comment = db.model('Comments', CommentSchema)
-
+// const { db } = require('../Schema/config')
+// const ArticleSchema = require('../Schema/article')
+// const Article = db.model('articles', ArticleSchema)
+// const UserSchema = require('../Schema/user')
+// const User = db.model('users', UserSchema)
+// const CommentSchema = require('../Schema/comment')
+// const Comment = db.model('Comments', CommentSchema)
+const User = require('../Models/user')
+const Article = require('../Models/article')
+const Comment = require('../Models/comment')
 
 exports.addPage = async ctx => {
   await ctx.render('add-article', {
@@ -127,30 +129,49 @@ exports.getArt = async ctx => {
 }
 
 exports.del = async ctx => {
+  // let id = ctx.params.id
+  // let message = {}
+
+  // await Comment
+  //   .find({article: id})
+  //   .then(async data => {
+  //     for (let i = 0, len = data.length; i < len; i++) {
+  //       let userId = data[i].from._id
+  //       await User.updateOne({ _id: userId }, { $inc: { commentNum: -1 } }).then(data => {}).catch(err => console.log(err))
+  //     }
+  //   })
+  //   .catch(err => console.log(err))
+
+  // await Comment.deleteMany({article: id}).then(data => {}).catch(err => console.log(err))
+
+  // await User.updateOne({ _id: ctx.session.uid }, { $inc: {articleNum: -1}})
+
+  // await Article
+  //   .deleteOne({_id: id})
+  //   .then(data => {
+  //     message = {
+  //       state: 1,
+  //       message: "删除成功"
+  //     }
+  //   })
+  //   .catch(err => {
+  //     message = {
+  //       state: 0,
+  //       message: "删除失败"
+  //     }
+  //   })
+
+  // ctx.body = message
+
   let id = ctx.params.id
-  let message = {}
+  let message = {
+    state: 1,
+    message: "删除成功"
+  }
 
-  await Comment
-    .find({article: id})
-    .then(async data => {
-      for (let i = 0, len = data.length; i < len; i++) {
-        let userId = data[i].from._id
-        await User.updateOne({ _id: userId }, { $inc: { commentNum: -1 } }).then(data => {}).catch(err => console.log(err))
-      }
-    })
-    .catch(err => console.log(err))
-
-  await Comment.deleteMany({article: id}).then(data => {}).catch(err => console.log(err))
-
-  await User.updateOne({ _id: ctx.session.uid }, { $inc: {articleNum: -1}})
-
-  await Article
-    .deleteOne({_id: id})
+  await Article.findById(id)
     .then(data => {
-      message = {
-        state: 1,
-        message: "删除成功"
-      }
+      data.remove()
     })
     .catch(err => {
       message = {

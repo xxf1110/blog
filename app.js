@@ -29,13 +29,13 @@ app.use(session(CONFIG, app))
   }))
   .use(body())
 
+  
 
 app.use(router.routes())
   .use(router.allowedMethods())
-
-app.listen(4000, () => {
-  console.log('服务器监听在 4000 端口')
-})
+  .listen(4000, () => {
+    console.log('服务器监听在 4000 端口')
+  })
 
 // 创建管理员账户
 admin()

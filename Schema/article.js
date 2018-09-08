@@ -21,4 +21,22 @@ const ArticleSchema = new Schema({
   }
 })
 
+
+ArticleSchema.post('remove', async doc => {
+  const User = require('../Models/user')
+  const Comment = require('../Models/comment')
+
+  const {_id, author} = doc
+
+  await User.updateOne({ _id: author }, { $inc: { articleNum: -1}}).exec()
+
+  await Comment.find({article: _id})
+    .then(data => {
+      data.forEach(v => v.remove())
+    })
+    .catch(err => console.log(err))
+
+
+})
+
 module.exports = ArticleSchema
